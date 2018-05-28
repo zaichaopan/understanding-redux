@@ -142,12 +142,12 @@ function addTodoToDom(todo) {
 function addGoalToDom(goal) {
     // list
     let list = document.createElement("li");
-    list.innerHTML = todo.name;
+    list.innerHTML = goal.name;
     goalList.appendChild(list);
 
     // remove
     const removeBtn = createRemoveBtn(function () {
-        store.dispatch(removeGoalAction(todo.id));
+        store.dispatch(removeGoalAction(goal.id));
     });
 
     list.appendChild(removeBtn)
