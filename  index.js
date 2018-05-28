@@ -74,6 +74,18 @@ function app(state = {}, action) {
     }
 }
 
+function checkAndDispatch(store, action) {
+    if (action.type === ADD_TODO && ~action.todo.name.toLowerCase().indexOf('bitcoin')) {
+        return alert('Nope! That is a bad idea');
+    }
+
+    if (action.type === ADD_GOAL && ~action.goal.name.toLowerCase().indexOf('bitcoin')) {
+        return alert('Nope! That is a bad idea');
+    }
+
+    store.dispatch(action);
+}
+
 function createStore(reducer) {
     // The store should have four parts
     // 1. The state
@@ -166,19 +178,12 @@ store.subscribe(updateTodoGoalList);
 addTodoBtn.addEventListener('click', function () {
     let value = todoInput.value;
     todoInput.value = '';
-    store.dispatch(addTodoAction({
-        id: generateId(),
-        name: value,
-        complete: false
-    }));
+    checkAndDispatch(store, addTodoAction({ id: generateId(), name: value, complete: false }));
 });
 
 
 addGoalBtn.addEventListener('click', function () {
     let value = goalInput.value;
     goalInput.value = '';
-    store.dispatch(addGoalAction({
-        id: generateId(),
-        name: value
-    }));
+    checkAndDispatch(store, addGoalAction({ id: generateId(), name: value }));
 });
