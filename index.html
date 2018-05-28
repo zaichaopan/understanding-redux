@@ -45,7 +45,8 @@
                 case REMOVE_TODO:
                     return state.filter(todo => todo.id !== action.id);
                 case TOGGLE_TODO:
-                    return state.map(todo => todo.id !== action.id ? todo : Object.assign({}, todo, { complete: !todo.complete }));
+                    return state.map(todo =>
+                        todo.id !== action.id ? todo : Object.assign({}, todo, { complete: !todo.complete }));
                 default:
                     return state;
             }
@@ -97,7 +98,7 @@
             }
         }
 
-        function checkAndDispatch(store, action) {
+        const checker = (store) => (next) => (action) => {
             if (action.type === ADD_TODO && ~action.todo.name.toLowerCase().indexOf('bitcoin')) {
                 return alert('Nope! That is a bad idea');
             }
@@ -106,7 +107,7 @@
                 return alert('Nope! That is a bad idea');
             }
 
-            store.dispatch(action);
+            next(action);
         }
 
         let addTodoBtn = document.querySelector('#todoBtn');
@@ -118,7 +119,7 @@
 
 
         // using redux to create tore
-        let store = Redux.createStore(Redux.combineReducers({ todos, goals }));
+        let store = Redux.createStore(Redux.combineReducers({ todos, goals }), Redux.applyMiddleware(checker));
 
         function createRemoveBtn(cb) {
             const removeBtn = document.createElement('button')
@@ -175,14 +176,15 @@
         addTodoBtn.addEventListener('click', function () {
             let value = todoInput.value;
             todoInput.value = '';
-            checkAndDispatch(store, addTodoAction({ id: generateId(), name: value, complete: false }));
+            store.dispatch(addTodoAction({ id: generateId(), name: value, complete: false }));
         });
 
         addGoalBtn.addEventListener('click', function () {
             let value = goalInput.value;
             goalInput.value = '';
-            checkAndDispatch(store, addGoalAction({ id: generateId(), name: value }));
+            store.dispatch(addGoalAction({ id: generateId(), name: value }));
         });
     </script>
 </body>
+
 </html>
