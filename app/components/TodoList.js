@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { handleAddTodo, handleToggleTodo, handleRemoveTodo } from '../actions/todos';
+import { connect } from 'react-redux';
 
 const propTypes = {
-  todos: PropTypes.array.isRequired,
-  store: PropTypes.object.isRequired
+  handleAddTodo: PropTypes.func.isRequired,
+  handleRemoveTodo: PropTypes.func.isRequired,
+  handleToggleTodo: PropTypes.func.isRequired,
+  todos: PropTypes.array.isRequired
 };
 
-export default class TodoList extends Component {
+class TodoList extends Component {
   constructor (props) {
     super(props);
     this.inputRef = React.createRef();
@@ -15,17 +18,15 @@ export default class TodoList extends Component {
 
   addTodo () {
     let input = this.inputRef.current;
-    this.props.store.dispatch(handleAddTodo(
-      input.value, () => { this.inputRef.current.value = ''; }
-    ));
+    this.props.handleAddTodo(input.value, () => { this.inputRef.current.value = ''; });
   }
 
   removeTodo (id) {
-    this.props.store.dispatch(handleRemoveTodo(id));
+    this.props.handleRemoveTodo(id);
   }
 
   toggleTodo (id) {
-    this.props.store.dispatch(handleToggleTodo(id));
+    this.props.handleToggleTodo(id);
   }
 
   render () {
@@ -59,3 +60,13 @@ export default class TodoList extends Component {
 }
 
 TodoList.propTypes = propTypes;
+
+const mapDispatchToProps = {
+  handleAddTodo,
+  handleRemoveTodo,
+  handleToggleTodo
+};
+
+const mapStateToProps = ({ todos }) => ({ todos });
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
