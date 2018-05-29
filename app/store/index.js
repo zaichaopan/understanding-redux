@@ -1,12 +1,13 @@
 import { createStore, applyMiddleware } from 'redux';
 import reducers from '../reducers';
+import thunk from 'redux-thunk'; //
 
-const thunk = (store) => (next) => (action) => {
-  if (typeof action === 'function') {
-    return action(store.dispatch);
-  }
-  return next(action);
-};
+// const thunk = (store) => (next) => (action) => {
+//   if (typeof action === 'function') {
+//     return action(store.dispatch);
+//   }
+//   return next(action);
+// };
 
 export default createStore(reducers, applyMiddleware(thunk));
 
