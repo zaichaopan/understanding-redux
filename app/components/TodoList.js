@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addTodo, removeTodo, toggleTodo } from '../actions/todos';
-import { generateId } from '../utils/helpers';
+import { handleAddTodo, handleToggleTodo, handleRemoveTodo } from '../actions/todos';
 
 const propTypes = {
   todos: PropTypes.array.isRequired,
@@ -16,32 +15,28 @@ export default class TodoList extends Component {
 
   addTodo () {
     let input = this.inputRef.current;
-    let name = input.value;
-    input.value = '';
-    this.props.store.dispatch(addTodo({
-      name,
-      id: generateId(),
-      complete: false
-    }));
+    this.props.store.dispatch(handleAddTodo(
+      input.value, () => { this.inputRef.current.value = ''; }
+    ));
   }
 
   removeTodo (id) {
-    this.props.store.dispatch(removeTodo(id));
+    this.props.store.dispatch(handleRemoveTodo(id));
   }
 
   toggleTodo (id) {
-    this.props.store.dispatch(toggleTodo(id));
+    this.props.store.dispatch(handleToggleTodo(id));
   }
 
   render () {
-    const list = this.props.todos.map(todo => (
+    const list = this.props.todos.map((todo, index) => (
       <li
-        key={todo.id}
-        onClick={e => this.toggleTodo(todo.id)}
-        style={{ textDecoration: todo.complete ? 'line-through' : 'none' }}
+        key={index}
+        id={todo.id}
       >
-        {todo.name}
-        <button onClick={(e) => this.removeTodo(todo.id)}>X</button>
+        <span onClick={e => this.toggleTodo(todo.id)}
+          style={{ textDecoration: todo.complete ? 'line-through' : 'none' }}>{todo.name}</span>
+        <button type="button" onClick={(e) => this.removeTodo(todo.id)}>X</button>
       </li>));
 
     return (

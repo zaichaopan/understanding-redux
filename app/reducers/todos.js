@@ -1,4 +1,5 @@
 import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO } from '../actions/todos';
+import { RECEIVE_DATA } from '../actions/shared';
 
 export default (state = [], action) => {
   switch (action.type) {
@@ -10,6 +11,8 @@ export default (state = [], action) => {
       );
     case REMOVE_TODO:
       return state.filter(todo => todo.id !== action.id);
+    case RECEIVE_DATA:
+      return action.todos;
     default:
       return state;
   }
